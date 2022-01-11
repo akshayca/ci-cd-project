@@ -10,7 +10,7 @@ pipeline {
         DOCKER_REPO = "${DOCKER_REPO_SERVER}/java-maven-app"
     }
 
-    agent none
+    agent any
     stages {
         stage('build app') {
             steps {
