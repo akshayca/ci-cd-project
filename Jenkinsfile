@@ -1,5 +1,6 @@
 #!/usr/bin/env groovy
 
+def gv
 pipeline {
     tools {
         maven 'Maven'
@@ -12,41 +13,39 @@ pipeline {
 
     agent any
     stages {
+        stage('Init'){
+            steps {
+                script {
+                    gv = load "script.groovy"
+                }
+            }
+        }
+
         stage('build app') {
             steps {
                 script {
-                    echo "Building the application..."
-                    bat 'mvn clean package'
+                    gv.buildJar()
                 }
             }
         }
         stage('build image') {
             steps {
                 script {
-                    echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        // bat "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
-                        // bat "echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}"
-                        // bat   93333 "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
-                        bat "docker build -t akshayca23/ci-cd-project:jma-1.0 ."
-                        bat "docker login -u %USER% -p %PASS%"
-//                         bat "echo %PASS% | docker login -u %USER% --password-stdin"  
-                        bat "docker push akshayca23/ci-cd-project:jma-1.0"
-                    }
+                    gv.buildImage()
                 }
             }
         }
         stage('test') {
             steps {
                 script {
-                    echo "Testing the application..."
+                    gv.testApp()
                 }
             }
         }
         stage('deploy') {
             steps {
                 script {
-                    echo "Deploying the application..."
+                    gv.deployApp()   
                 }
             }
         }
