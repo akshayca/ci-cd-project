@@ -29,7 +29,7 @@ pipeline {
                         // bat "echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}"
                         // bat   93333 "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
                         bat "docker build -t akshayca23/ci-cd-project:jma-1.0 ."
-                        bat "docker login -u %USER% --p %PASS%"
+                        bat "docker login -u %USER% -p %PASS%"
 //                         bat "echo %PASS% | docker login -u %USER% --password-stdin"  
                         bat "docker push akshayca23/ci-cd-project:jma-1.0"
                     }
