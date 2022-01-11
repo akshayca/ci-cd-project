@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         // bat "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
                         // bat "echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}"
                         // bat   93333 "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
