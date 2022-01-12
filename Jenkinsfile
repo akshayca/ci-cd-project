@@ -7,7 +7,6 @@ library identifier: 'jenkins-shared-library@master', retriever: modernSCM(
         ]
 )
 
-
 def gv
 pipeline {
     agent any
@@ -18,6 +17,7 @@ pipeline {
     environment {
         DOCKER_REPO_SERVER = '664574038682.dkr.ecr.eu-west-3.amazonaws.com'
         DOCKER_REPO = "${DOCKER_REPO_SERVER}/java-maven-app"
+        IMAGE_REPO = 'akshayca23/ci-cd-project'
     }
 
     stages {
@@ -51,9 +51,9 @@ pipeline {
         stage('build and push image') {
             steps {
                 script {
-                    buildImage 'akshayca23/ci-cd-project:jma-2.0'
+                    buildImage '${IMAGE_REPO}:${IMAGE_NAME}'
                     dockerLogin()
-                    dockerPush 'akshayca23/ci-cd-project:jma-2.0'
+                    dockerPush '${IMAGE_REPO}:${IMAGE_NAME}'
 
                 }
             }
@@ -72,5 +72,20 @@ pipeline {
                 }
             }
         }
+        stage('commit version update') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        bat 'git config user.email "jenkins@example.com"'
+                        bat 'git config user.name "Jenkins"'
+                        bat "git remote set-url origin https://${USER}:${PASS}@github.com/akshayca/ci-cd-project.git"
+                        bat 'git add .'
+                        bat 'git commit -m "ci: version bump"'
+                        bat 'git push origin HEAD:master'
+                    }
+                }
+            }
+        }
+
     }
 }
