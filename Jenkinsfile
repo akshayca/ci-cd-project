@@ -76,7 +76,7 @@ pipeline {
         stage('commit version update') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-pta', variable: 'PASS')]) {
+                        withCredentials([string(credentialsId: 'github-pta', variable: 'SECRET')]) {
                         bat 'git config user.email "jenkins@example.com"'
                         bat 'git config user.name "Jenkins"'
                         bat "git remote set-url origin https://${PASS}@github.com/akshayca/ci-cd-project.git"
