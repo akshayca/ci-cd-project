@@ -44,6 +44,7 @@ pipeline {
         stage('build Jar') {
             steps {
                 script {
+                    echo "building the application for branch ${env.BRANCH_NAME}"
                     buildJar()
                 }
             }
@@ -51,9 +52,9 @@ pipeline {
         stage('build and push image') {
             steps {
                 script {
-                    buildImage '${IMAGE_REPO}:${IMAGE_NAME}'
+                    buildImage "${IMAGE_REPO}:${IMAGE_NAME}"
                     dockerLogin()
-                    dockerPush '${IMAGE_REPO}:${IMAGE_NAME}'
+                    dockerPush "${IMAGE_REPO}:${IMAGE_NAME}"
 
                 }
             }
