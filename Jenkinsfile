@@ -10,6 +10,7 @@ library identifier: 'jenkins-shared-library@master', retriever: modernSCM(
 
 def gv
 pipeline {
+    agent any
     tools {
         maven 'Maven'
     }
@@ -19,7 +20,6 @@ pipeline {
         DOCKER_REPO = "${DOCKER_REPO_SERVER}/java-maven-app"
     }
 
-    agent any
     stages {
         stage('Init'){
             steps {
@@ -28,6 +28,18 @@ pipeline {
                 }
             }
         }
+        stage('increment version') {
+            steps {
+                script {
+                    incrementversion()
+                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                    def version = matcher[0][1]
+                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                    echo "############ ${IMAGE_REPO}"
+                }
+            }
+        }
+
 
         stage('build Jar') {
             steps {
