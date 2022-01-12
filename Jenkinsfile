@@ -76,10 +76,10 @@ pipeline {
         stage('commit version update') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github-pta', variable: 'PASS')]) {
                         bat 'git config user.email "jenkins@example.com"'
                         bat 'git config user.name "Jenkins"'
-                        bat "git remote set-url origin https://${USER}:${PASS}@github.com/akshayca/ci-cd-project.git"
+                        bat "git remote set-url origin https://${PASS}@github.com/akshayca/ci-cd-project.git"
                         bat 'git add .'
                         bat 'git commit -m "ci: version bump"'
                         bat 'git push origin HEAD:master'
