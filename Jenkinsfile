@@ -70,7 +70,7 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    gv.deployApp()
+//                     gv.deployApp()
                     // def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
                     def shellCmd = "sudo docker run -p 3080:3080 -d ${IMAGE_REPOV}"
                     def ec2Instance = "ec2-user@3.83.47.208"
