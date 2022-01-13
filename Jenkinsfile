@@ -18,6 +18,7 @@ pipeline {
         DOCKER_REPO_SERVER = '664574038682.dkr.ecr.eu-west-3.amazonaws.com'
         DOCKER_REPO = "${DOCKER_REPO_SERVER}/java-maven-app"
         IMAGE_REPO = 'akshayca23/ci-cd-project'
+        IMAGE_REPOV = 'akshayca23/ci-cd-project:jma-1.0'
     }
 
     stages {
@@ -71,7 +72,7 @@ pipeline {
                 script {
                     gv.deployApp()
                     // def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
-                    def shellCmd = "sudo docker run -p 3080:3080 -d ${IMAGE_REPO}"
+                    def shellCmd = "sudo docker run -p 3080:3080 -d ${IMAGE_REPOV}"
                     def ec2Instance = "ec2-user@3.83.47.208"
 
                    sshagent(['ec2-server-key']) {
