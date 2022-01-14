@@ -87,12 +87,12 @@ pipeline {
             steps {
                 script {
                         withCredentials([string(credentialsId: 'github-pta', variable: 'SECRET')]) {
-                        bat 'git config user.email "jenkins@example.com"'
-                        bat 'git config user.name "Jenkins"'
-                        bat "git remote set-url origin https://${PASS}@github.com/akshayca/ci-cd-project.git"
-                        bat 'git add .'
-                        bat 'git commit -m "ci: version bump"'
-                        bat 'git push origin HEAD:master'
+                        sh 'git config user.email "jenkins@example.com"'
+                        sh 'git config user.name "Jenkins"'
+                        sh "git remote set-url origin https://${PASS}@github.com/akshayca/ci-cd-project.git"
+                        sh 'git add .'
+                        sh 'git commit -m "ci: version bump"'
+                        sh 'git push origin HEAD:master'
                     }
                 }
             }
