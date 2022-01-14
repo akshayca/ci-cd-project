@@ -90,7 +90,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'github-pta', variable: 'SECRET')]) {
                         sh 'git config user.email "jenkins@example.com"'
                         sh 'git config user.name "Jenkins"'
-                        sh "git remote set-url origin https://${PASS}@github.com/akshayca/ci-cd-project.git"
+                        sh "git remote set-url origin https://${SECRET}@github.com/akshayca/ci-cd-project.git"
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
                         sh 'git push origin HEAD:master'
