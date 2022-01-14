@@ -73,7 +73,7 @@ pipeline {
 //                     gv.deployApp()
                     // def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
                     def shellCmd = "sudo docker run -p 3080:3080 -d ${IMAGE_REPOV}"
-                    def ec2Instance = "ec2-user@3.83.47.208"
+                    def ec2Instance = "ec2-user@44.201.173.98"
 
                    sshagent(['ec2-server-key']) {
                     //    sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${ec2Instance}:/home/ec2-user"
