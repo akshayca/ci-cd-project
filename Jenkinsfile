@@ -28,7 +28,9 @@ pipeline {
                     incrementversion()
                     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
                     def version = matcher[0][1]
-                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                    def repo = 'akshayca23/ci-cd-project'
+                    env.IMAGE_NAME = "$repo:$version-$BUILD_NUMBER"
+                    echo "Image name - > ${env.IMAGE_NAME}"
                 }
             }
         }
@@ -48,7 +50,6 @@ pipeline {
                     buildImage(env.IMAGE_NAME)
                     dockerLogin()
                     dockerPush(env.IMAGE_NAME)
-
                 }
             }
         }
@@ -62,7 +63,7 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    // gv.deployApp()
+//                     gv.deployApp()
                     def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
                     def ec2Instance = "ec2-user@3.86.59.222"
 
