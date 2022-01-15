@@ -14,13 +14,6 @@ pipeline {
         maven 'Maven'
     }
 
-    environment {
-        DOCKER_REPO_SERVER = '664574038682.dkr.ecr.eu-west-3.amazonaws.com'
-        DOCKER_REPO = "${DOCKER_REPO_SERVER}/java-maven-app"
-        IMAGE_REPO = 'akshayca23/ci-cd-project'
-        IMAGE_REPOV = 'akshayca23/ci-cd-project:jma-1.0'
-    }
-
     stages {
         stage('Init'){
             steps {
@@ -36,7 +29,6 @@ pipeline {
                     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
                     def version = matcher[0][1]
                     env.IMAGE_NAME = "$version-$BUILD_NUMBER"
-                    echo "Image name - > ${env.IMAGE_NAME}"
                 }
             }
         }
@@ -53,9 +45,9 @@ pipeline {
         stage('build and push image') {
             steps {
                 script {
-                    buildImage "${IMAGE_REPO}:${IMAGE_NAME}"
+                    buildImage(env.IMAGE_NAME)
                     dockerLogin()
-                    dockerPush "${IMAGE_REPO}:${IMAGE_NAME}"
+                    dockerPush(env.IMAGE_NAME)
 
                 }
             }
@@ -70,14 +62,13 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-//                     gv.deployApp()
-                    // def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
-                    def shellCmd = "sudo docker run -p 3080:3080 -d ${IMAGE_REPOV}"
-                    def ec2Instance = "ec2-user@44.201.173.98"
+                    // gv.deployApp()
+                    def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
+                    def ec2Instance = "ec2-user@3.86.59.222"
 
                    sshagent(['ec2-server-key']) {
-                    //    sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${ec2Instance}:/home/ec2-user"
-                    //    sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${ec2Instance}:/home/ec2-user"
+                       sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${ec2Instance}:/home/ec2-user"
+                       sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${ec2Instance}:/home/ec2-user"
                        sh "ssh -o StrictHostKeyChecking=no ${ec2Instance} ${shellCmd}"
                    }
    
