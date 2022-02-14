@@ -13,6 +13,10 @@ pipeline {
     tools {
         maven 'Maven'
     }
+    environment {
+        DOCKER_REPO_SERVER = '745874038936.dkr.ecr.us-east-1.amazonaws.com'
+        DOCKER_REPO = "${DOCKER_REPO_SERVER}/java-maven-app"
+    }
 
     stages {
         stage('Init'){
@@ -61,21 +65,20 @@ pipeline {
             }
         }
         stage('deploy') {
+            environment {
+                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+                AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
+                APP_NAME = 'java-maven-app'
+            }
             steps {
                 script {
-//                     gv.deployApp()
-                    def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME}"
-                    def ec2Instance = "ec2-user@3.86.59.222"
-
-                   sshagent(['ec2-server-key']) {
-                       sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${ec2Instance}:/home/ec2-user"
-                       sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${ec2Instance}:/home/ec2-user"
-                       sh "ssh -o StrictHostKeyChecking=no ${ec2Instance} ${shellCmd}"
-                   }
-   
+                    echo 'deploying docker image...'
+                    sh 'envsubst < kubernetes/deployment.yaml | kubectl apply -f -'
+                    sh 'envsubst < kubernetes/service.yaml | kubectl apply -f -'
                 }
             }
         }
+
         stage('commit version update') {
             steps {
                 script {
